@@ -68,7 +68,7 @@ class plgAuthenticationRadicalMart extends CMSPlugin
 
 		try
 		{
-			if (ComponentHelper::getComponent('com_radicalmart_express'))
+			if (!empty(ComponentHelper::getComponent('com_radicalmart_express')->id))
 			{
 				JLoader::register('RadicalMartHelperUser',
 					JPATH_ADMINISTRATOR . '/components/com_radicalmart_express/helpers/user.php');
@@ -84,8 +84,6 @@ class plgAuthenticationRadicalMart extends CMSPlugin
 			}
 
 			// Prepare data
-			JLoader::register('RadicalMartHelperUser',
-				JPATH_ADMINISTRATOR . '/components/com_radicalmart_express/helpers/user.php');
 			$data = array(
 				'username' => $credentials['username'],
 				'email'    => $credentials['username'],
