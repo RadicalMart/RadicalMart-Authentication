@@ -2,7 +2,7 @@
 /*
  * @package     RadicalMart Package
  * @subpackage  plg_pagecache_radicalmart
- * @version     1.0.0
+ * @version     __DEPLOY_VERSION__
  * @author      Delo Design - delo-design.ru
  * @copyright   Copyright (c) 2021 Delo Design. All rights reserved.
  * @license     GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
@@ -26,7 +26,7 @@ class PlgAuthenticationRadicalMartInstallerScript
 	 *
 	 * @return  boolean True on success, False on failure.
 	 *
-	 * @since  __DEPLOY_VERSION__
+	 * @since  1.0.0
 	 */
 	function postflight($type, $parent)
 	{
@@ -41,7 +41,7 @@ class PlgAuthenticationRadicalMartInstallerScript
 	 *
 	 * @param   InstallerAdapter  $parent  Parent object calling object.
 	 *
-	 * @since  __DEPLOY_VERSION__
+	 * @since  1.0.0
 	 */
 	protected function enablePlugin($parent)
 	{

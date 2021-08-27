@@ -2,7 +2,7 @@
 /*
  * @package     RadicalMart Express Package
  * @subpackage  plg_button_radicalmart_express
- * @version     1.0.0
+ * @version     __DEPLOY_VERSION__
  * @author      Delo Design - delo-design.ru
  * @copyright   Copyright (c) 2021 Delo Design. All rights reserved.
  * @license     GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
@@ -22,7 +22,7 @@ class plgAuthenticationRadicalMart extends CMSPlugin
 	 *
 	 * @var  boolean
 	 *
-	 * @since  __DEPLOY_VERSION__
+	 * @since  1.0.0
 	 */
 	protected $autoloadLanguage = true;
 
@@ -31,7 +31,7 @@ class plgAuthenticationRadicalMart extends CMSPlugin
 	 *
 	 * @var string
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 1.0.0
 	 */
 	public $name = 'Radicalmart';
 
@@ -44,7 +44,7 @@ class plgAuthenticationRadicalMart extends CMSPlugin
 	 *
 	 * @return  bool True on success, false on failure.
 	 *
-	 * @since  __DEPLOY_VERSION__
+	 * @since  1.0.0
 	 */
 	public function onUserAuthenticate(&$credentials, $options, &$response)
 	{
