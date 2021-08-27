@@ -2,7 +2,7 @@
 /*
  * @package     RadicalMart Express Package
  * @subpackage  plg_button_radicalmart_express
- * @version     0.2.0
+ * @version     1.0.0
  * @author      Delo Design - delo-design.ru
  * @copyright   Copyright (c) 2021 Delo Design. All rights reserved.
  * @license     GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
@@ -68,7 +68,7 @@ class plgAuthenticationRadicalMart extends CMSPlugin
 
 		try
 		{
-			if (ComponentHelper::getComponent('com_radicalmart_express'))
+			if (!empty(ComponentHelper::getComponent('com_radicalmart_express')->id))
 			{
 				JLoader::register('RadicalMartHelperUser',
 					JPATH_ADMINISTRATOR . '/components/com_radicalmart_express/helpers/user.php');
@@ -84,8 +84,6 @@ class plgAuthenticationRadicalMart extends CMSPlugin
 			}
 
 			// Prepare data
-			JLoader::register('RadicalMartHelperUser',
-				JPATH_ADMINISTRATOR . '/components/com_radicalmart_express/helpers/user.php');
 			$data = array(
 				'username' => $credentials['username'],
 				'email'    => $credentials['username'],
