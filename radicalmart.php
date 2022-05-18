@@ -11,7 +11,9 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Authentication\Authentication;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 
@@ -48,19 +50,10 @@ class plgAuthenticationRadicalMart extends CMSPlugin
 	 */
 	public function onUserAuthenticate(&$credentials, $options, &$response)
 	{
-		// Check password
-		if (empty($credentials['password']))
-		{
-			$response->status        = JAuthentication::STATUS_FAILURE;
-			$response->error_message = Text::_('JGLOBAL_AUTH_EMPTY_PASS_NOT_ALLOWED');
-
-			return false;
-		}
-
 		// Check username
 		if (empty($credentials['username']))
 		{
-			$response->status        = JAuthentication::STATUS_FAILURE;
+			$response->status        = Authentication::STATUS_FAILURE;
 			$response->error_message = Text::_('JGLOBAL_AUTH_NO_USER');
 
 			return false;
@@ -90,13 +83,52 @@ class plgAuthenticationRadicalMart extends CMSPlugin
 				'phone'    => RadicalMartHelperUser::cleanPhone($credentials['username']),
 			);
 			if (!$user = RadicalMartHelperUser::findUser($data)) throw new Exception(Text::_('JGLOBAL_AUTH_NO_USER'));
-
-			// Check password
 			$credentials['username'] = $user->username;
-			RadicalMartHelperPlugins::triggerPlugin('authentication', 'joomla', 'onUserAuthenticate',
-				array($credentials, $options, &$response));
 
-			if ($response->status == JAuthentication::STATUS_FAILURE) throw new Exception($response->error_message);
+			// Get authentication type
+			$type = (!empty($credentials['type'])) ? $credentials['type'] : 'password';
+			if ($type === 'rma_code')
+			{
+				// Authentication by code
+				$code = (!empty($credentials['rma_code'])) ? trim($credentials['rma_code']) : '';
+				if (empty($code))
+				{
+					throw new Exception(Text::_('PLG_AUTHENTICATION_RADICALMART_ERROR_EMPTY_CODE'));
+				}
+
+				$session = trim(Factory::getApplication()->getUserState('rma_code', ''));
+				if (empty($session))
+				{
+					throw new Exception(Text::_('PLG_AUTHENTICATION_RADICALMART_ERROR_EMPTY_SESSION'));
+				}
+
+				if ($session !== $code)
+				{
+					throw new Exception(Text::_('PLG_AUTHENTICATION_RADICALMART_ERROR_CODE_INVALID'));
+				}
+
+				// Set response data
+				$response->email         = $user->email;
+				$response->fullname      = $user->name;
+				$response->language      = (Factory::getApplication()->isClient('administrator'))
+					? $user->getParam('admin_language') : $user->getParam('language');
+				$response->status        = Authentication::STATUS_SUCCESS;
+				$response->error_message = '';
+			}
+			else
+			{
+				// Authentication by password
+				if (empty($credentials['password']))
+				{
+					throw new Exception(Text::_('JGLOBAL_AUTH_EMPTY_PASS_NOT_ALLOWED'));
+				}
+
+				// Check password
+				RadicalMartHelperPlugins::triggerPlugin('authentication', 'joomla', 'onUserAuthenticate',
+					array($credentials, $options, &$response));
+
+				if ($response->status == JAuthentication::STATUS_FAILURE) throw new Exception($response->error_message);
+			}
 
 			return true;
 		}
