@@ -21,7 +21,7 @@
 	</files>
 	<updateservers>
 		<server type="extension" priority="1" name="RadicalMart - Authentication">
-			https://radicalmart.ru/update?element=plg_authentication_radicalmart
+			https://sovmart.ru/update?element=plg_authentication_radicalmart
 		</server>
 	</updateservers>
 </extension>

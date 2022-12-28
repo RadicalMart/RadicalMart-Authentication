@@ -61,28 +61,40 @@ class plgAuthenticationRadicalMart extends CMSPlugin
 
 		try
 		{
-			if (!empty(ComponentHelper::getComponent('com_radicalmart_express')->id))
+			$find = false;
+			if (!empty(ComponentHelper::getComponent('com_radicalmart')->id))
 			{
+				$find          = true;
+				$userHelper    = '\Joomla\Component\RadicalMart\Administrator\Helper\UserHelper';
+				$pluginsHelper = '\Joomla\Component\RadicalMart\Administrator\Helper\PluginsHelper';
+			}
+			elseif (!empty(ComponentHelper::getComponent('com_radicalmart_express')->id))
+			{
+				$find = true;
 				JLoader::register('RadicalMartHelperUser',
 					JPATH_ADMINISTRATOR . '/components/com_radicalmart_express/helpers/user.php');
 				JLoader::register('RadicalMartHelperPlugins',
 					JPATH_ADMINISTRATOR . '/components/com_radicalmart_express/helpers/plugins.php');
+				$userHelper    = 'RadicalMartHelperUser';
+				$pluginsHelper = 'RadicalMartHelperPlugins';
 			}
-			else
+
+			if (!$find)
 			{
-				JLoader::register('RadicalMartHelperUser',
-					JPATH_ADMINISTRATOR . '/components/com_radicalmart/helpers/user.php');
-				JLoader::register('RadicalMartHelperPlugins',
-					JPATH_ADMINISTRATOR . '/components/com_radicalmart/helpers/plugins.php');
+				throw new Exception(Text::_('PLG_AUTHENTICATION_RADICALMART_ERROR_COMPONENT_NOT_FOUND'));
 			}
 
 			// Prepare data
 			$data = array(
 				'username' => $credentials['username'],
 				'email'    => $credentials['username'],
-				'phone'    => RadicalMartHelperUser::cleanPhone($credentials['username']),
+				'phone'    => $userHelper::cleanPhone($credentials['username']),
 			);
-			if (!$user = RadicalMartHelperUser::findUser($data)) throw new Exception(Text::_('JGLOBAL_AUTH_NO_USER'));
+
+			if (!$user = $userHelper::findUser($data))
+			{
+				throw new Exception(Text::_('JGLOBAL_AUTH_NO_USER'));
+			}
 			$credentials['username'] = $user->username;
 
 			// Get authentication type
@@ -124,10 +136,13 @@ class plgAuthenticationRadicalMart extends CMSPlugin
 				}
 
 				// Check password
-				RadicalMartHelperPlugins::triggerPlugin('authentication', 'joomla', 'onUserAuthenticate',
-					array($credentials, $options, &$response));
+				$pluginsHelper::triggerPlugin('authentication', 'joomla', 'onUserAuthenticate',
+					[$credentials, $options, &$response]);
 
-				if ($response->status == JAuthentication::STATUS_FAILURE) throw new Exception($response->error_message);
+				if ($response->status == JAuthentication::STATUS_FAILURE)
+				{
+					throw new Exception($response->error_message);
+				}
 			}
 
 			return true;

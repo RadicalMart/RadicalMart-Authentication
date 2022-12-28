@@ -16,6 +16,30 @@ use Joomla\CMS\Installer\InstallerAdapter;
 
 class PlgAuthenticationRadicalMartInstallerScript
 {
+
+	/**
+	 * Runs right before any installation action.
+	 *
+	 * @param   string            $type    Type of PostFlight action.
+	 * @param   InstallerAdapter  $parent  Parent object calling object.
+	 *
+	 * @throws  Exception
+	 *
+	 * @return  boolean True on success, False on failure.
+	 *
+	 * @since  __DEPLOY_VERSION__
+	 */
+	function preflight($type, $parent)
+	{
+		// Change update servers
+		if ($type === 'update')
+		{
+			$this->changeUpdateServer();
+		}
+
+		return true;
+	}
+
 	/**
 	 * Runs right after any installation action.
 	 *
@@ -53,6 +77,29 @@ class PlgAuthenticationRadicalMartInstallerScript
 		$plugin->enabled = 1;
 
 		// Update record
-		Factory::getDbo()->updateObject('#__extensions', $plugin, array('type', 'element', 'folder'));
+		Factory::getDbo()->updateObject('#__extensions', $plugin, ['type', 'element', 'folder']);
+	}
+
+	/**
+	 * Method to change update server.
+	 *
+	 * @since __DEPLOY_VERSION__
+	 */
+	protected function changeUpdateServer()
+	{
+		$old = 'https://radicalmart.ru/update?element=plg_authentication_radicalmart';
+		$new = 'https://sovmart.ru/update?element=plg_authentication_radicalmart';
+
+		$db    = Factory::getDbo();
+		$query = $db->getQuery(true)
+			->select(['update_site_id', 'location'])
+			->from($db->quoteName('#__update_sites'))
+			->where($db->quoteName('location') . ' LIKE ' .
+				$db->quote($old));
+		if ($update = $db->setQuery($query)->loadObject())
+		{
+			$update->location = $new;
+			$db->updateObject('#__update_sites', $update, 'update_site_id');
+		}
 	}
 }
