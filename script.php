@@ -2,9 +2,9 @@
 /*
  * @package     RadicalMart Package
  * @subpackage  plg_pagecache_radicalmart
- * @version     __DEPLOY_VERSION__
+ * @version     1.0.1
  * @author      Delo Design - delo-design.ru
- * @copyright   Copyright (c) 2021 Delo Design. All rights reserved.
+ * @copyright   Copyright (c) 2022 Delo Design. All rights reserved.
  * @license     GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
  * @link        https://delo-design.ru/
  */
@@ -27,7 +27,7 @@ class PlgAuthenticationRadicalMartInstallerScript
 	 *
 	 * @return  boolean True on success, False on failure.
 	 *
-	 * @since  __DEPLOY_VERSION__
+	 * @since  1.0.1
 	 */
 	function preflight($type, $parent)
 	{
@@ -83,7 +83,7 @@ class PlgAuthenticationRadicalMartInstallerScript
 	/**
 	 * Method to change update server.
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 1.0.1
 	 */
 	protected function changeUpdateServer()
 	{
