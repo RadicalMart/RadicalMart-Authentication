@@ -7,7 +7,7 @@
 	<license>https://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>boss@delo-design.ru</authorEmail>
 	<authorUrl>https://delo-design.ru</authorUrl>
-	<version>1.0.0</version>
+	<version>1.0.1-dev</version>
 	<description>PLG_AUTHENTICATION_RADICALMART_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
 	<languages folder="language">
@@ -21,7 +21,7 @@
 	</files>
 	<updateservers>
 		<server type="extension" priority="1" name="RadicalMart - Authentication">
-			https://radicalmart.ru/update?element=plg_authentication_radicalmart
+			https://sovmart.ru/update?element=plg_authentication_radicalmart
 		</server>
 	</updateservers>
 </extension>
