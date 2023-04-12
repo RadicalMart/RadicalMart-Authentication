@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="3.9" type="plugin" group="authentication" method="upgrade">
+<extension version="4.3" type="plugin" group="authentication" method="upgrade">
 	<name>PLG_AUTHENTICATION_RADICALMART</name>
 	<author>Delo Design</author>
-	<creationDate>December 2022</creationDate>
-	<copyright>Copyright © 2022 Delo Design. All rights reserved.</copyright>
+	<creationDate>April 2023</creationDate>
+	<copyright>Copyright © 2023 Delo Design. All rights reserved.</copyright>
 	<license>https://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>boss@delo-design.ru</authorEmail>
 	<authorUrl>https://delo-design.ru</authorUrl>
 	<version>1.0.2-dev</version>
 	<description>PLG_AUTHENTICATION_RADICALMART_DESCRIPTION</description>
+	<namespace path="src">Joomla\Plugin\Authentication\RadicalMart</namespace>
 	<scriptfile>script.php</scriptfile>
 	<languages folder="language">
 		<language tag="en-GB">en-GB/en-GB.plg_authentication_radicalmart.ini</language>
@@ -17,10 +18,11 @@
 		<language tag="ru-RU">ru-RU/ru-RU.plg_authentication_radicalmart.sys.ini</language>
 	</languages>
 	<files>
-		<filename plugin="radicalmart">radicalmart.php</filename>
+		<folder>services</folder>
+		<folder plugin="radicalmart">src</folder>
 	</files>
 	<updateservers>
-		<server type="extension" priority="1" name="RadicalMart - Authentication">
+		<server type="extension" priority="1" name="Authentication - RadicalMart">
 			https://sovmart.ru/update?element=plg_authentication_radicalmart
 		</server>
 	</updateservers>
