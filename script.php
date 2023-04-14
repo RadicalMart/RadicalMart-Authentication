@@ -173,7 +173,6 @@ return new class () implements ServiceProviderInterface {
 			 */
 			public function postflight(string $type, InstallerAdapter $adapter): bool
 			{
-				$installer = $adapter->getParent();
 				// Run updates script
 				if ($type === 'update')
 				{
