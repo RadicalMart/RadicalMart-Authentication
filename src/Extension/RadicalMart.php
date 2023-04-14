@@ -2,7 +2,7 @@
 /*
  * @package     RadicalMart Authentication
  * @subpackage  plg_authentication_radicalmart
- * @version     __DEPLOY_VERSION__
+ * @version     2.0.0
  * @author      Delo Design - delo-design.ru
  * @copyright   Copyright (c) 2023 Delo Design. All rights reserved.
  * @license     GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
@@ -47,7 +47,7 @@ class RadicalMart extends CMSPlugin implements SubscriberInterface
 	 *
 	 * @return  array
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   2.0.0
 	 */
 	public static function getSubscribedEvents(): array
 	{
@@ -118,7 +118,7 @@ class RadicalMart extends CMSPlugin implements SubscriberInterface
 	 *
 	 * @return false|User User object if found, False if not.
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 2.0.0
 	 */
 	protected function getRadicalMartUser(string $username)
 	{
@@ -139,7 +139,7 @@ class RadicalMart extends CMSPlugin implements SubscriberInterface
 	 *
 	 * @return false|User User object on if find, False on not.
 	 *
-	 * @since __DEPLOY_VERSION__
+	 * @since 2.0.0
 	 */
 	protected function getRadicalMartExpressUser(string $username)
 	{
@@ -159,7 +159,7 @@ class RadicalMart extends CMSPlugin implements SubscriberInterface
 	 * @param   User    $user         Find user object.
 	 * @param   object  $response     Authentication response object.
 	 *
-	 * @since  __DEPLOY_VERSION__
+	 * @since  2.0.0
 	 */
 	protected function authenticateWithPassword(array $credentials, array $options, User $user, object &$response)
 	{
@@ -186,7 +186,7 @@ class RadicalMart extends CMSPlugin implements SubscriberInterface
 	 * @param   User    $user         Find user object.
 	 * @param   object  $response     Authentication response object.
 	 *
-	 * @since  __DEPLOY_VERSION__
+	 * @since  2.0.0
 	 */
 	protected function authenticateWithCode(array $credentials, array $options, User $user, object &$response)
 	{
