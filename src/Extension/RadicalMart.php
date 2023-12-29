@@ -15,9 +15,11 @@ namespace Joomla\Plugin\Authentication\RadicalMart\Extension;
 
 use Joomla\CMS\Authentication\Authentication;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Event\User\AuthenticationEvent;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\User\User;
+use Joomla\CMS\Version;
 use Joomla\Component\RadicalMart\Administrator\Helper\UserHelper as RadicalMartUserHelper;
 use Joomla\Component\RadicalMartExpress\Administrator\Helper\UserHelper as RadicalMartExpressUserHelper;
 use Joomla\Event\SubscriberInterface;
@@ -52,7 +54,8 @@ class RadicalMart extends CMSPlugin implements SubscriberInterface
 	public static function getSubscribedEvents(): array
 	{
 		return [
-			'onUserAuthenticate' => 'onUserAuthenticate'
+			'onUserAuthenticate' => (new Version())->isCompatible(5.0)
+				? 'onUserAuthenticateJoomla5' : 'onUserAuthenticate'
 		];
 	}
 
@@ -110,6 +113,68 @@ class RadicalMart extends CMSPlugin implements SubscriberInterface
 	}
 
 	/**
+	 * This method should handle any authentication and report back to the subject.
+	 *
+	 * @param   array   $credentials  Array holding the user credentials.
+	 * @param   array   $options      Array of extra options.
+	 * @param   object  $response     Authentication response object.
+	 *
+	 * @since  __DEPLOY_VERSION__
+	 */
+	public function onUserAuthenticateJoomla5(AuthenticationEvent $event)
+	{
+		$credentials = $event->getCredentials();
+		$options     = $event->getOptions();
+		$response    = $event->getAuthenticationResponse();
+
+		// Check username
+		$username = (!empty($credentials['username'])) ? (string) $credentials['username'] : false;
+		if (!$username)
+		{
+			$response->status        = Authentication::STATUS_FAILURE;
+			$response->error_message = Text::_('JGLOBAL_AUTH_NO_USER');
+
+			return;
+		}
+
+		// Find user
+		foreach (['getRadicalMartUser', 'getRadicalMartExpressUser'] as $method)
+		{
+			$user = $this->$method($username);
+			if ($user)
+			{
+				break;
+			}
+		}
+
+		if (!$user)
+		{
+			$response->status        = Authentication::STATUS_FAILURE;
+			$response->error_message = Text::_('JGLOBAL_AUTH_NO_USER');
+
+			return;
+		}
+		$credentials['username'] = $user->username;
+
+		// Authenticate user
+		$methods = [
+			'password' => 'authenticateWithPassword',
+			'rma_code' => 'authenticateWithCode',
+		];
+		$type    = (!empty($credentials['type'])) ? $credentials['type'] : 'password';
+		$method  = (isset($methods[$type])) ? $methods[$type] : false;
+		if ($method)
+		{
+			$event->setArgument('credentials', $credentials);
+			$this->$method($credentials, $options, $user, $response, $event);
+		}
+
+		$response->username = $user->username;
+		$response->fullname = $user->usernam;
+		$event->setArgument('subject', $response);
+	}
+
+	/**
 	 * Method to find user in RadicalMart.
 	 *
 	 * @param   string  $username  Authentication username.
@@ -154,14 +219,15 @@ class RadicalMart extends CMSPlugin implements SubscriberInterface
 	/**
 	 * Method for authenticate user with password.
 	 *
-	 * @param   array   $credentials  Array holding the user credentials.
-	 * @param   array   $options      Array of extra options.
-	 * @param   User    $user         Find user object.
-	 * @param   object  $response     Authentication response object.
+	 * @param   array                     $credentials  Array holding the user credentials.
+	 * @param   array                     $options      Array of extra options.
+	 * @param   User                      $user         Find user object.
+	 * @param   object                    $response     Authentication response object.
+	 * @param   bool|AuthenticationEvent  $event
 	 *
 	 * @since  2.0.0
 	 */
-	protected function authenticateWithPassword(array $credentials, array $options, User $user, object &$response)
+	protected function authenticateWithPassword(array $credentials, array $options, User $user, object &$response, &$event = false)
 	{
 		// Authentication by password
 		if (empty($credentials['password']))
@@ -175,7 +241,16 @@ class RadicalMart extends CMSPlugin implements SubscriberInterface
 		// Check password
 		/* @var \PlgAuthenticationJoomla $plugin */
 		$plugin = $this->app->bootPlugin('joomla', 'authentication');
-		$plugin->onUserAuthenticate($credentials, $options, $response);
+		if ($event)
+		{
+			$plugin->onUserAuthenticate($event);
+			$response = $event->getAuthenticationResponse();
+		}
+		else
+		{
+			$plugin->onUserAuthenticate($credentials, $options, $response);
+		}
+
 	}
 
 	/**
@@ -188,7 +263,7 @@ class RadicalMart extends CMSPlugin implements SubscriberInterface
 	 *
 	 * @since  2.0.0
 	 */
-	protected function authenticateWithCode(array $credentials, array $options, User $user, object &$response)
+	protected function authenticateWithCode(array $credentials, array $options, User $user, object &$response, $event = false)
 	{
 		try
 		{
