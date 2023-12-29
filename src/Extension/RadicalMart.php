@@ -2,7 +2,7 @@
 /*
  * @package     RadicalMart Authentication
  * @subpackage  plg_authentication_radicalmart
- * @version     __DEPLOY_VERSION__
+ * @version     2.0.1
  * @author      Delo Design - delo-design.ru
  * @copyright   Copyright (c) 2023 Delo Design. All rights reserved.
  * @license     GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
@@ -119,7 +119,7 @@ class RadicalMart extends CMSPlugin implements SubscriberInterface
 	 * @param   array   $options      Array of extra options.
 	 * @param   object  $response     Authentication response object.
 	 *
-	 * @since  __DEPLOY_VERSION__
+	 * @since  2.0.1
 	 */
 	public function onUserAuthenticateJoomla5(AuthenticationEvent $event)
 	{
