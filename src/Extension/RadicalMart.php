@@ -170,7 +170,7 @@ class RadicalMart extends CMSPlugin implements SubscriberInterface
 		}
 
 		$response->username = $user->username;
-		$response->fullname = $user->usernam;
+		$response->fullname = $user->username;
 		$event->setArgument('subject', $response);
 	}
 
